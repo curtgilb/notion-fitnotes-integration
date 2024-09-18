@@ -1,0 +1,24 @@
+{
+  "name": "fitnotes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=syncNotionToFitnotes",
+    "deploy": "gcloud functions deploy notion-fitnotes-integration  --gen2 --runtime=nodejs20 --region=us-central1 --source=. --entry-point=syncNotionToFitnotes --trigger-http --allow-unauthenticated"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.2",
+    "@google-cloud/local-auth": "^3.0.1",
+    "@notionhq/client": "^2.2.15",
+    "@prisma/client": "^5.19.1",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.1"
+  }
+}

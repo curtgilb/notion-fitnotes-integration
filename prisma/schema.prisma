@@ -1,0 +1,257 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Barbell {
+  id          Int   @id @default(autoincrement()) @map("_id")
+  weight      Float
+  unit        Int   @default(0)
+  exercise_id Int   @default(0)
+}
+
+model BodyWeight {
+  id                 Int     @id @default(autoincrement()) @map("_id")
+  date               String
+  body_weight_metric Float
+  body_fat           Float
+  comments           String?
+}
+
+model Category {
+  id         Int    @id @default(autoincrement()) @map("_id")
+  name       String
+  colour     Int    @default(0)
+  sort_order Int    @default(0)
+}
+
+model Comment {
+  id            Int      @id @default(autoincrement()) @map("_id")
+  date          DateTime
+  owner_type_id Int
+  owner_id      Int
+  comment       String
+}
+
+model ExerciseGraphFavourite {
+  id            Int @id @default(autoincrement()) @map("_id")
+  group_id      Int
+  exercise_id   Int
+  graph_type_id Int @default(0)
+  time_period   Int @default(0)
+  sort_order    Int @default(0)
+  is_default    Int @default(0)
+}
+
+model Goal {
+  id               Int     @id @default(autoincrement()) @map("_id")
+  type_id          Int
+  exercise_id      Int
+  metric_weight    Int
+  reps             Int
+  unit             Int
+  title            String?
+  target_date      String?
+  sort_order       Int     @default(0)
+  distance         Int     @default(0)
+  duration_seconds Int     @default(0)
+  start_date       String?
+}
+
+model Measurement {
+  id         Int    @id @default(autoincrement()) @map("_id")
+  name       String
+  unit_id    Int    @default(0)
+  goal_type  Int    @default(0)
+  goal_value Float  @default(0)
+  custom     Int    @default(0)
+  enabled    Int    @default(0)
+  sort_order Int    @default(0)
+}
+
+model MeasurementRecord {
+  id             Int     @id @default(autoincrement()) @map("_id")
+  measurement_id Int
+  date           String
+  time           String
+  value          Float
+  comment        String?
+}
+
+model MeasurementUnit {
+  id         Int    @id @default(autoincrement()) @map("_id")
+  type       Int    @default(0)
+  long_name  String
+  short_name String
+}
+
+model Plate {
+  id           Int   @id @default(autoincrement()) @map("_id")
+  weight       Float
+  unit         Int   @default(0)
+  count        Int   @default(0)
+  enabled      Int   @default(0)
+  colour       Int   @default(0)
+  width_ratio  Float @default(1)
+  height_ratio Float @default(1)
+}
+
+model RepMaxGridFavourite {
+  id           Int    @id @default(autoincrement()) @map("_id")
+  exercise_ids String
+  rep_counts   String
+  is_default   Int    @default(0)
+  sort_order   Int    @default(0)
+}
+
+model Routine {
+  id    Int     @id @default(autoincrement()) @map("_id")
+  name  String
+  notes String?
+}
+
+model RoutineSection {
+  id         Int    @id @default(autoincrement()) @map("_id")
+  routine_id Int
+  name       String
+  sort_order Int    @default(0)
+}
+
+model RoutineSectionExercise {
+  id                 Int @id @default(autoincrement()) @map("_id")
+  routine_section_id Int
+  exercise_id        Int
+  sort_order         Int @default(0)
+  populate_sets_type Int @default(0)
+}
+
+model RoutineSectionExerciseSet {
+  id                          Int @id @default(autoincrement()) @map("_id")
+  routine_section_exercise_id Int
+  metric_weight               Int
+  reps                        Int
+  sort_order                  Int @default(0)
+  distance                    Int @default(0)
+  duration_seconds            Int @default(0)
+  unit                        Int @default(0)
+}
+
+model WorkoutComment {
+  id      Int    @id @default(autoincrement()) @map("_id")
+  date    String
+  comment String
+}
+
+model WorkoutGroup {
+  id                            Int    @id @default(autoincrement()) @map("_id")
+  name                          String
+  date                          String
+  colour                        Int
+  routine_section_id            Int?
+  auto_jump_enabled             Int    @default(1)
+  rest_timer_auto_start_enabled Int    @default(0)
+}
+
+model WorkoutGroupExercise {
+  id                 Int    @id @default(autoincrement()) @map("_id")
+  exercise_id        Int
+  date               String
+  routine_section_id Int
+  workout_group_id   Int
+}
+
+model WorkoutTime {
+  id              Int    @id @default(autoincrement()) @map("_id")
+  workout_date    String
+  start_date_time String
+  end_date_time   String
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model android_metadata {
+  locale String?
+
+  @@ignore
+}
+
+model exercise {
+  id                Int     @id @default(autoincrement()) @map("_id")
+  name              String
+  category_id       Int
+  exercise_type_id  Int     @default(0)
+  notes             String?
+  weight_increment  Int?
+  default_graph_id  Int?
+  default_rest_time Int?
+  weight_unit_id    Int     @default(0)
+  is_favourite      Int     @default(0)
+}
+
+model settings {
+  id                                      Int  @id @default(autoincrement()) @map("_id")
+  metric                                  Int  @default(0)
+  first_day_of_week                       Int  @default(0)
+  selected_navigation_item_id             Int  @default(0)
+  weight_increment                        Int  @default(0)
+  body_weight_increment                   Int?
+  body_weight_goal                        Int?
+  body_weight_goal_weight                 Int?
+  body_weight_show_in_workout_log         Int?
+  estimated_1rm_max_reps_to_include       Int?
+  estimated_1rm_max_apply_to_graph        Int?
+  track_personal_records                  Int?
+  mark_sets_complete                      Int?
+  auto_select_next_set                    Int?
+  keep_screen_on                          Int?
+  graph_show_points                       Int?
+  graph_show_trend_line                   Int?
+  graph_start_at_zero                     Int?
+  rest_timer_seconds                      Int?
+  rest_timer_vibrate                      Int?
+  rest_timer_sound                        Int?
+  rest_timer_volume                       Int?
+  rest_timer_auto_start                   Int?
+  calendar_detail_visible                 Int?
+  calendar_category_dots_visible          Int?
+  calendar_navigation_bar_visible         Int?
+  calendar_history_category_dots_visible  Int?
+  calendar_history_category_names_visible Int?
+  calendar_history_sets_visible           Int?
+  category_sort_order                     Int?
+  category_show_colours                   Int?
+  measurement_tracker_initial_load        Int?
+  measurement_show_in_workout_log         Int?
+  workout_graph_default_graph_type        Int?
+  workout_graph_default_time_period       Int?
+  analysis_breakdown_breakdown_type       Int?
+  analysis_breakdown_time_period          Int?
+  exercise_list_detail_type_id            Int?
+  workout_timer_auto_start_enabled        Int?
+  workout_timer_auto_stop_enabled         Int?
+  home_screen_limit_type_id               Int?
+  home_screen_limit_value                 Int?
+  home_screen_category_visibility_id      Int?
+  home_screen_skip_empty_dates            Int?
+  app_theme_id                            Int?
+}
+
+model training_log {
+  id                              Int      @id @default(autoincrement()) @map("_id")
+  exercise_id                     Int
+  date                            String
+  metric_weight                   Int
+  reps                            Int
+  unit                            Int      @default(0)
+  routine_section_exercise_set_id Int      @default(0)
+  timer_auto_start                Int      @default(0)
+  is_personal_record              Int      @default(0)
+  is_personal_record_first        Int      @default(0)
+  is_complete                     Int      @default(0)
+  is_pending_update               Int      @default(0)
+  distance                        Int      @default(0)
+  duration_seconds                Int      @default(0)
+}
