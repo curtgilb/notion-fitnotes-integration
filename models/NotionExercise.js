@@ -44,16 +44,14 @@ export class NotionExercise {
     )
       return null;
 
-    return `
-      TARGETED MUSCLE:
-        ${this.targeted_muscles.join()}
-      DESCRIPTION:
-        ${this.description ? this.description : ""}
-      VIDEO:
-        ${this.video ? this.video : ""}
-      SOURCE:
-        ${this.source ? this.source.join("\n") : ""}
-      `;
+    return `TARGETED MUSCLE:
+${this.targeted_muscles.join()}
+DESCRIPTION:
+${this.description ? this.description : ""}
+VIDEO:
+${this.video ? this.video : ""}
+SOURCE:
+${this.source ? this.source.join("\n") : ""}`;
   }
 
   async update(fitNoteExercise) {
