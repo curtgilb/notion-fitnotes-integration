@@ -1,20 +1,18 @@
-const WATCH_DATA_PATH = path.join(process.cwd(), "./credentials/watch.json");
-const CHANNEL_ID = "18888044-a447-42fc-a5df-79ec350b029e";
-const VALIDATION_TOKEN = process.env.VALIDATION_TOKEN;
+import "dotenv/config";
 import path from "path";
-import { FOLDER_ID } from "./drive.js";
 import { getDriveClient } from "./authentication.js";
-import { saveJsonToFile } from "./utils.js";
+import { readJsonFromFile, saveJsonToFile } from "./utils.js";
 
+const WATCH_DATA_PATH = path.join(process.cwd(), "./credentials/watch.json");
 const drive = await getDriveClient();
 
 export async function stopWatchingFolder() {
   try {
-    const watchData = readJsonFromFile(WATCH_DATA_PATH);
+    const watchData = await readJsonFromFile(WATCH_DATA_PATH);
     await drive.channels.stop({
       requestBody: {
-        id: CHANNEL_ID,
-        resourceId: FOLDER_ID,
+        id: watchData.id,
+        resourceId: watchData.resourceId,
       },
     });
 
@@ -25,20 +23,16 @@ export async function stopWatchingFolder() {
 }
 
 export async function watchFolder() {
-  const folderId = FOLDER_ID; // Replace with your Google Drive folder ID
-  const webhookAddress =
-    "https://us-central1-fitnotes-434508.cloudfunctions.net/notion-fitnotes-integration";
-
   const requestBody = {
-    id: CHANNEL_ID, // A unique identifier for this channel (you can use UUID)
+    id: process.env.CHANNEL_ID, // A unique identifier for this channel (you can use UUID)
     type: "web_hook",
-    address: webhookAddress,
-    token: VALIDATION_TOKEN,
+    address: process.env.URL,
+    token: process.env.VALIDATION_TOKEN,
   };
 
   try {
     const response = await drive.files.watch({
-      fileId: folderId, // Folder ID you want to monitor
+      fileId: process.env.DOWNLOAD_FOLDER_ID, // Folder ID you want to monitor
       resource: requestBody,
     });
 

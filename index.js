@@ -11,15 +11,17 @@ import { generateDbConnection } from "./clients/db.js";
 functions.http("syncNotionToFitnotes", async (req, res) => {
   if (
     req.method === "POST" &&
-    req.headers.token === process.env.VALIDATION_TOKEN
+    req.headers["x-goog-channel-token"] === process.env.VALIDATION_TOKEN
   ) {
     try {
       await sync();
       res.status(200).send("OK");
     } catch (error) {
       res.status(500).send("Error");
+      console.log("Error:", error);
     }
   } else {
+    console.log("Forbidden");
     res.status(403).send("Forbidden");
   }
 });
@@ -31,5 +33,3 @@ async function sync() {
   await synchronizer.syncNotionAndFitNotes();
   await uploadFileToDrive(downloadPath);
 }
-
-await sync();

@@ -3,8 +3,6 @@ import { createReadStream, createWriteStream } from "fs";
 import { getDriveClient } from "./authentication.js";
 import path from "path";
 
-export const DOWNLOAD_FOLDER_ID = "1mVh2jPnU47N-eUtTPdNKYdt1nrmRXDV-";
-const UPLOAD_FOLDER_ID = "19pqBIJ9y54HifG5UJtvQBHpXlyx9obIm";
 const DOWNLOAD_PATH =
   process.env.NODE_ENV === "production"
     ? "/tmp"
@@ -20,10 +18,10 @@ function generateFileDbName() {
 // List files in the folder and get the most recent file
 async function getLastUploadedFile() {
   const res = await drive.files.list({
-    q: `'${DOWNLOAD_FOLDER_ID}' in parents and trashed = false`, // Query to list files in the folder
-    fields: "files(id, name, createdTime)", // We only need ID, name, and createdTime
-    orderBy: "createdTime desc", // Order by the latest created time (most recent file)
-    pageSize: 1, // Limit the result to 1 file (the most recent one)
+    q: `'${process.env.DOWNLOAD_FOLDER_ID}' in parents and trashed = false`,
+    fields: "files(id, name, createdTime)",
+    orderBy: "createdTime desc",
+    pageSize: 1,
   });
 
   const files = res.data.files;
@@ -69,7 +67,7 @@ async function downloadFile(file) {
 export async function uploadFileToDrive(filePath) {
   const fileMetadata = {
     name: path.basename(filePath), // File name
-    parents: [UPLOAD_FOLDER_ID], // Upload to specific folder
+    parents: [process.env.UPLOAD_FOLDER_ID], // Upload to specific folder
   };
 
   const media = {
